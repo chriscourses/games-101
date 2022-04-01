@@ -136,12 +136,21 @@ function animate() {
     projectiles.forEach((projectile, projectilesIndex) => {
       const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y)
 
-      // objects touch
+      // when projectiles touch enemy
       if (dist - enemy.radius - projectile.radius < 1) {
-        setTimeout(() => {
-          enemies.splice(index, 1)
-          projectiles.splice(projectilesIndex, 1)
-        }, 0)
+        if (enemy.radius - 10 > 5) {
+          gsap.to(enemy, {
+            radius: enemy.radius - 10
+          })
+          setTimeout(() => {
+            projectiles.splice(projectilesIndex, 1)
+          }, 0)
+        } else {
+          setTimeout(() => {
+            enemies.splice(index, 1)
+            projectiles.splice(projectilesIndex, 1)
+          }, 0)
+        }
       }
     })
   })
