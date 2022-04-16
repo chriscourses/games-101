@@ -1,6 +1,7 @@
 <style>
   body {
     margin: 0;
+    font-family: sans-serif;
   }
 </style>
 <div
@@ -8,13 +9,39 @@
     position: absolute;
     color: white;
     padding: 8px;
-    font-family: sans-serif;
     font-size: 14px;
     user-select: none;
   "
 >
   <span>Score: <span id="scoreEl">0</span></span>
 </div>
+
+<div
+  id="modalEl"
+  style="
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    padding: 16px;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    border-radius: 5px;
+  "
+>
+  <label style="font-size: 14px; color: gray">Game Over</label>
+  <h1
+    id="modalScoreEl"
+    style="font-size: 48px; margin-bottom: 0; margin-top: 8px"
+  >
+    0
+  </h1>
+  <p style="margin: 0; font-size: 14px; color: gray">Points</p>
+</div>
+
 <canvas></canvas>
 
 <script
