@@ -4,6 +4,7 @@ const c = canvas.getContext('2d')
 const scoreEl = document.querySelector('#scoreEl')
 const modalEl = document.querySelector('#modalEl')
 const modalScoreEl = document.querySelector('#modalScoreEl')
+const buttonEl = document.querySelector('#buttonEl')
 
 canvas.width = innerWidth
 canvas.height = innerHeight
@@ -104,13 +105,26 @@ class Particle {
 const x = canvas.width / 2
 const y = canvas.height / 2
 
-const player = new Player(x, y, 10, 'white')
-const projectiles = []
-const enemies = []
-const particles = []
+let player = new Player(x, y, 10, 'white')
+let projectiles = []
+let enemies = []
+let particles = []
+let animationId
+let intervalId
+let score = 0
+
+function init() {
+  player = new Player(x, y, 10, 'white')
+  projectiles = []
+  enemies = []
+  particles = []
+  animationId
+  score = 0
+}
 
 function spawnEnemies() {
-  setInterval(() => {
+  intervalId = setInterval(() => {
+    console.log(intervalId)
     const radius = Math.random() * (30 - 4) + 4
 
     let x
@@ -137,8 +151,6 @@ function spawnEnemies() {
   }, 1000)
 }
 
-let animationId
-let score = 0
 function animate() {
   animationId = requestAnimationFrame(animate)
   c.fillStyle = 'rgba(0, 0, 0, 0.1)'
@@ -182,6 +194,7 @@ function animate() {
     //end game
     if (dist - enemy.radius - player.radius < 1) {
       cancelAnimationFrame(animationId)
+      clearInterval(intervalId)
       modalEl.style.display = 'block'
       modalScoreEl.innerHTML = score
     }
@@ -246,6 +259,13 @@ addEventListener('click', (event) => {
   projectiles.push(
     new Projectile(canvas.width / 2, canvas.height / 2, 5, 'white', velocity)
   )
+})
+
+buttonEl.addEventListener('click', () => {
+  init()
+  animate()
+  spawnEnemies()
+  modalEl.style.display = 'none'
 })
 
 animate()
