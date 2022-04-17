@@ -5,6 +5,8 @@ const scoreEl = document.querySelector('#scoreEl')
 const modalEl = document.querySelector('#modalEl')
 const modalScoreEl = document.querySelector('#modalScoreEl')
 const buttonEl = document.querySelector('#buttonEl')
+const startButtonEl = document.querySelector('#startButtonEl')
+const startModalEl = document.querySelector('#startModalEl')
 
 canvas.width = innerWidth
 canvas.height = innerHeight
@@ -268,5 +270,9 @@ buttonEl.addEventListener('click', () => {
   modalEl.style.display = 'none'
 })
 
-animate()
-spawnEnemies()
+startButtonEl.addEventListener('click', () => {
+  init()
+  animate()
+  spawnEnemies()
+  startModalEl.style.display = 'none'
+})
