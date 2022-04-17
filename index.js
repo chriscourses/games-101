@@ -122,6 +122,7 @@ function init() {
   particles = []
   animationId
   score = 0
+  scoreEl.innerHTML = 0
 }
 
 function spawnEnemies() {
@@ -197,7 +198,17 @@ function animate() {
     if (dist - enemy.radius - player.radius < 1) {
       cancelAnimationFrame(animationId)
       clearInterval(intervalId)
+
       modalEl.style.display = 'block'
+      gsap.fromTo(
+        '#modalEl',
+        { scale: 0.8, opacity: 0 },
+        {
+          scale: 1,
+          opacity: 1,
+          ease: 'expo'
+        }
+      )
       modalScoreEl.innerHTML = score
     }
 
@@ -263,16 +274,34 @@ addEventListener('click', (event) => {
   )
 })
 
+// restart game
 buttonEl.addEventListener('click', () => {
   init()
   animate()
   spawnEnemies()
-  modalEl.style.display = 'none'
+  gsap.to('#modalEl', {
+    opacity: 0,
+    scale: 0.8,
+    duration: 0.2,
+    ease: 'expo.in',
+    onComplete: () => {
+      modalEl.style.display = 'none'
+    }
+  })
 })
 
 startButtonEl.addEventListener('click', () => {
   init()
   animate()
   spawnEnemies()
-  startModalEl.style.display = 'none'
+  // startModalEl.style.display = 'none'
+  gsap.to('#startModalEl', {
+    opacity: 0,
+    scale: 0.8,
+    duration: 0.2,
+    ease: 'expo.in',
+    onComplete: () => {
+      startModalEl.style.display = 'none'
+    }
+  })
 })
