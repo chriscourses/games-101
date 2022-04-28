@@ -1,0 +1,37 @@
+Basic Game Checklist:
+  ✔ Create a player @done (22-04-13 12:18)
+  ✔ Shoot projectiles @done (22-04-13 12:18)
+  ✔ Create enemies @done (22-04-13 12:18)
+  ✔ Detect collision on enemy / projectile hit @done (22-04-13 12:18)
+  ✔ Detect collision on enemy / player hit @done (22-04-13 12:18)
+  ✔ Remove off screen projectiles @done (22-04-13 12:18)
+  ✔ Colorize game @done (22-04-13 12:18)
+  ✔ Shrink enemies on hit @done (22-04-13 12:18)
+  ✔ Create particle explosion on hit @done (22-04-13 12:18)
+  ✔ Add score @done (22-04-16 15:02)
+  ✔ More accurate object removal @done (22-04-16 15:23)
+  ✔ Add game over UI @done (22-04-16 15:49)
+  ✔ Add restart button @done (22-04-16 16:12)
+  ✔ Add start game button @done (22-04-16 21:49)
+  ✔ UI Animations @done (22-04-16 22:10)
+
+
+Movement, Enemies, and Enhanced Interaction:
+  ✔ Player Movement @done (22-04-20 13:30)
+  ☐ Homing Enemies
+  ☐ Spinning Enemies
+  ☐ Homing-Spinning Enemies
+  ☐ Power-Ups
+  ☐ Dynamic Score Labels
+  ☐ Interactive Background Particles
+  ☐ Sound Effects
+  ☐ Background Music
+  ☐ Mute Button
+  ☐ Screen Resizing
+  ☐ Mobile Events and Performance
+
+
+
+
+
+
