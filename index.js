@@ -11,184 +11,6 @@ const startModalEl = document.querySelector('#startModalEl')
 canvas.width = innerWidth
 canvas.height = innerHeight
 
-class Player {
-  constructor(x, y, radius, color) {
-    this.x = x
-    this.y = y
-    this.radius = radius
-    this.color = color
-    this.velocity = {
-      x: 0,
-      y: 0
-    }
-  }
-
-  draw() {
-    c.beginPath()
-    c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
-    c.fillStyle = this.color
-    c.fill()
-  }
-
-  update() {
-    this.draw()
-
-    const friction = 0.99
-
-    this.velocity.x *= friction
-    this.velocity.y *= friction
-
-    // collision detection for x axis
-    if (
-      this.x + this.radius + this.velocity.x <= canvas.width &&
-      this.x - this.radius + this.velocity.x >= 0
-    ) {
-      this.x += this.velocity.x
-    } else {
-      this.velocity.x = 0
-    }
-
-    // collision detection for y axis
-    if (
-      this.y + this.radius + this.velocity.y <= canvas.height &&
-      this.y - this.radius + this.velocity.y >= 0
-    ) {
-      this.y += this.velocity.y
-    } else {
-      this.velocity.y = 0
-    }
-  }
-}
-
-class Projectile {
-  constructor(x, y, radius, color, velocity) {
-    this.x = x
-    this.y = y
-    this.radius = radius
-    this.color = color
-    this.velocity = velocity
-  }
-
-  draw() {
-    c.beginPath()
-    c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
-    c.fillStyle = this.color
-    c.fill()
-  }
-
-  update() {
-    this.draw()
-    this.x = this.x + this.velocity.x
-    this.y = this.y + this.velocity.y
-  }
-}
-
-class Enemy {
-  constructor(x, y, radius, color, velocity) {
-    this.x = x
-    this.y = y
-    this.radius = radius
-    this.color = color
-    this.velocity = velocity
-    this.type = 'Linear'
-    this.radians = 0
-    this.center = {
-      x,
-      y
-    }
-
-    if (Math.random() < 0.5) {
-      this.type = 'Homing'
-
-      if (Math.random() < 0.5) {
-        this.type = 'Spinning'
-
-        if (Math.random() < 0.5) {
-          this.type = 'Homing Spinning'
-        }
-      }
-    }
-  }
-
-  draw() {
-    c.beginPath()
-    c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
-    c.fillStyle = this.color
-    c.fill()
-  }
-
-  update() {
-    this.draw()
-
-    if (this.type === 'Spinning') {
-      this.radians += 0.1
-
-      this.center.x += this.velocity.x
-      this.center.y += this.velocity.y
-
-      this.x = this.center.x + Math.cos(this.radians) * 30
-      this.y = this.center.y + Math.sin(this.radians) * 30
-    } else if (this.type === 'Homing') {
-      const angle = Math.atan2(player.y - this.y, player.x - this.x)
-      this.velocity.x = Math.cos(angle)
-      this.velocity.y = Math.sin(angle)
-
-      this.x = this.x + this.velocity.x
-      this.y = this.y + this.velocity.y
-    } else if (this.type === 'Homing Spinning') {
-      this.radians += 0.1
-
-      const angle = Math.atan2(
-        player.y - this.center.y,
-        player.x - this.center.x
-      )
-      this.velocity.x = Math.cos(angle)
-      this.velocity.y = Math.sin(angle)
-
-      this.center.x += this.velocity.x
-      this.center.y += this.velocity.y
-
-      this.x = this.center.x + Math.cos(this.radians) * 30
-      this.y = this.center.y + Math.sin(this.radians) * 30
-    } else {
-      // linear movement
-      this.x = this.x + this.velocity.x
-      this.y = this.y + this.velocity.y
-    }
-  }
-}
-
-const friction = 0.99
-class Particle {
-  constructor(x, y, radius, color, velocity) {
-    this.x = x
-    this.y = y
-    this.radius = radius
-    this.color = color
-    this.velocity = velocity
-    this.alpha = 1
-  }
-
-  draw() {
-    c.save()
-    c.globalAlpha = this.alpha
-    c.beginPath()
-    c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
-    c.fillStyle = this.color
-    c.fill()
-    c.restore()
-  }
-
-  update() {
-    this.draw()
-    this.velocity.x *= friction
-    this.velocity.y *= friction
-    this.x = this.x + this.velocity.x
-    this.y = this.y + this.velocity.y
-    this.alpha -= 0.01
-  }
-}
-
 const x = canvas.width / 2
 const y = canvas.height / 2
 
@@ -199,20 +21,23 @@ let particles = []
 let animationId
 let intervalId
 let score = 0
+let powerUps = []
+let frames = 0
 
 function init() {
   player = new Player(x, y, 10, 'white')
   projectiles = []
   enemies = []
   particles = []
+  powerUps = []
   animationId
   score = 0
   scoreEl.innerHTML = 0
+  frames = 0
 }
 
 function spawnEnemies() {
   intervalId = setInterval(() => {
-    console.log(intervalId)
     const radius = Math.random() * (30 - 4) + 4
 
     let x
@@ -239,12 +64,75 @@ function spawnEnemies() {
   }, 1000)
 }
 
+function spawnPowerUps() {
+  spawnPowerUpsId = setInterval(() => {
+    powerUps.push(
+      new PowerUp({
+        position: {
+          x: -30,
+          y: Math.random() * canvas.height
+        },
+        velocity: {
+          x: Math.random() + 2,
+          y: 0
+        }
+      })
+    )
+  }, 10000)
+}
+
 function animate() {
   animationId = requestAnimationFrame(animate)
   c.fillStyle = 'rgba(0, 0, 0, 0.1)'
   c.fillRect(0, 0, canvas.width, canvas.height)
+  frames++
 
   player.update()
+
+  for (let i = powerUps.length - 1; i >= 0; i--) {
+    const powerUp = powerUps[i]
+
+    if (powerUp.position.x > canvas.width) {
+      powerUps.splice(i, 1)
+    } else powerUp.update()
+
+    const dist = Math.hypot(
+      player.x - powerUp.position.x,
+      player.y - powerUp.position.y
+    )
+
+    // gain power up
+    if (dist < powerUp.image.height / 2 + player.radius) {
+      powerUps.splice(i, 1)
+      player.powerUp = 'MachineGun'
+      player.color = 'yellow'
+
+      // power up runs out
+      setTimeout(() => {
+        player.powerUp = null
+        player.color = 'white'
+      }, 5000)
+    }
+  }
+
+  console.log(powerUps)
+
+  // machine gun animation / implementation
+  if (player.powerUp === 'MachineGun') {
+    const angle = Math.atan2(
+      mouse.position.y - player.y,
+      mouse.position.x - player.x
+    )
+    const velocity = {
+      x: Math.cos(angle) * 5,
+      y: Math.sin(angle) * 5
+    }
+
+    if (frames % 2 === 0)
+      projectiles.push(
+        new Projectile(player.x, player.y, 5, 'yellow', velocity)
+      )
+  }
 
   for (let index = particles.length - 1; index >= 0; index--) {
     const particle = particles[index]
@@ -353,11 +241,23 @@ addEventListener('click', (event) => {
   projectiles.push(new Projectile(player.x, player.y, 5, 'white', velocity))
 })
 
+const mouse = {
+  position: {
+    x: 0,
+    y: 0
+  }
+}
+addEventListener('mousemove', (event) => {
+  mouse.position.x = event.clientX
+  mouse.position.y = event.clientY
+})
+
 // restart game
 buttonEl.addEventListener('click', () => {
   init()
   animate()
   spawnEnemies()
+  spawnPowerUps()
   gsap.to('#modalEl', {
     opacity: 0,
     scale: 0.8,
@@ -373,6 +273,7 @@ startButtonEl.addEventListener('click', () => {
   init()
   animate()
   spawnEnemies()
+  spawnPowerUps()
   // startModalEl.style.display = 'none'
   gsap.to('#startModalEl', {
     opacity: 0,
@@ -386,7 +287,6 @@ startButtonEl.addEventListener('click', () => {
 })
 
 window.addEventListener('keydown', (event) => {
-  console.log(event.key)
   switch (event.key) {
     case 'ArrowRight':
       player.velocity.x += 1
