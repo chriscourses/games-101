@@ -81,6 +81,26 @@ function spawnPowerUps() {
   }, 10000)
 }
 
+function createScoreLabel({ position, score }) {
+  const scoreLabel = document.createElement('label')
+  scoreLabel.innerHTML = score
+  scoreLabel.style.color = 'white'
+  scoreLabel.style.position = 'absolute'
+  scoreLabel.style.left = position.x + 'px'
+  scoreLabel.style.top = position.y + 'px'
+  scoreLabel.style.userSelect = 'none'
+  document.body.appendChild(scoreLabel)
+
+  gsap.to(scoreLabel, {
+    opacity: 0,
+    y: -30,
+    duration: 0.75,
+    onComplete: () => {
+      scoreLabel.parentNode.removeChild(scoreLabel)
+    }
+  })
+}
+
 function animate() {
   animationId = requestAnimationFrame(animate)
   c.fillStyle = 'rgba(0, 0, 0, 0.1)'
@@ -218,12 +238,25 @@ function animate() {
           gsap.to(enemy, {
             radius: enemy.radius - 10
           })
+          createScoreLabel({
+            position: {
+              x: projectile.x,
+              y: projectile.y
+            },
+            score: 100
+          })
           projectiles.splice(projectilesIndex, 1)
         } else {
           // remove enemy if they are too small
           score += 150
           scoreEl.innerHTML = score
-
+          createScoreLabel({
+            position: {
+              x: projectile.x,
+              y: projectile.y
+            },
+            score: 150
+          })
           enemies.splice(index, 1)
           projectiles.splice(projectilesIndex, 1)
         }
