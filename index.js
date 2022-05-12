@@ -7,6 +7,8 @@ const modalScoreEl = document.querySelector('#modalScoreEl')
 const buttonEl = document.querySelector('#buttonEl')
 const startButtonEl = document.querySelector('#startButtonEl')
 const startModalEl = document.querySelector('#startModalEl')
+const volumeUpEl = document.querySelector('#volumeUpEl')
+const volumeOffEl = document.querySelector('#volumeOffEl')
 
 canvas.width = innerWidth
 canvas.height = innerHeight
@@ -332,9 +334,12 @@ function animate() {
   }
 }
 
-addEventListener('click', (event) => {
-  if (!audio.background.playing()) {
+let audioInitialized = false
+
+window.addEventListener('click', (event) => {
+  if (!audio.background.playing() && !audioInitialized) {
     audio.background.play()
+    audioInitialized = true
   }
 
   if (game.active) {
@@ -394,6 +399,27 @@ startButtonEl.addEventListener('click', () => {
       startModalEl.style.display = 'none'
     }
   })
+})
+
+// mute everything
+volumeUpEl.addEventListener('click', () => {
+  audio.background.pause()
+  volumeOffEl.style.display = 'block'
+  volumeUpEl.style.display = 'none'
+
+  for (let key in audio) {
+    audio[key].mute(true)
+  }
+})
+
+// unmute everything
+volumeOffEl.addEventListener('click', () => {
+  if (audioInitialized) audio.background.play()
+  volumeOffEl.style.display = 'none'
+  volumeUpEl.style.display = 'block'
+  for (let key in audio) {
+    audio[key].mute(false)
+  }
 })
 
 window.addEventListener('keydown', (event) => {
