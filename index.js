@@ -242,6 +242,7 @@ function animate() {
     if (dist - enemy.radius - player.radius < 1) {
       cancelAnimationFrame(animationId)
       clearInterval(intervalId)
+      clearInterval(spawnPowerUpsId)
       audio.death.play()
       game.active = false
 
@@ -446,6 +447,19 @@ window.addEventListener('resize', () => {
   canvas.height = innerHeight
 
   init()
+})
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    // inactive
+    // clearIntervals
+    clearInterval(intervalId)
+    clearInterval(spawnPowerUpsId)
+  } else {
+    // spawnEnemies spawnPowerUps
+    spawnEnemies()
+    spawnPowerUps()
+  }
 })
 
 window.addEventListener('keydown', (event) => {
