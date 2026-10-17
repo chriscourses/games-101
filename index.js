@@ -469,7 +469,8 @@ window.addEventListener('keydown', (event) => {
   )
     event.preventDefault()
 
-  switch (event.key) {
+  // lowercase so caps lock doesn't break WASD
+  switch (event.key.length === 1 ? event.key.toLowerCase() : event.key) {
     case 'ArrowRight':
     case 'd':
       player.velocity.x += 1
