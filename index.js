@@ -463,17 +463,27 @@ document.addEventListener('visibilitychange', () => {
 })
 
 window.addEventListener('keydown', (event) => {
+  // prevent the page from scrolling
+  if (
+    [' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)
+  )
+    event.preventDefault()
+
   switch (event.key) {
     case 'ArrowRight':
+    case 'd':
       player.velocity.x += 1
       break
     case 'ArrowUp':
+    case 'w':
       player.velocity.y -= 1
       break
     case 'ArrowLeft':
+    case 'a':
       player.velocity.x -= 1
       break
     case 'ArrowDown':
+    case 's':
       player.velocity.y += 1
       break
   }
